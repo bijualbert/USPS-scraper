@@ -1,12 +1,14 @@
 from USPS_scraper import track
 
-tracking_pattern = "LN1478025%02dCN"
+tracking_pattern = "LN147802%03dCN"
 if __name__ == '__main__':
-	#numbers = ["9400110200882950235373", "LN147802515CN"]
-	for i in range(0,100,10):
-		numbers = [tracking_pattern%i for i in range(15+i,25+i)]
+	#real tracking number: LN147802515CN
+	#stride 10
+	#
+	for i in range(0,1000,10):
+		numbers = [tracking_pattern%j for j in range(i,i+10)]
 		tracking_info = track(numbers)
-		for i in range(15+i,25+i):
-			info = tracking_info[i%10]
+		for j in range(i,i+10):
+			info = tracking_info[j%10]
 			if info!="error":
-				print(tracking_pattern%i, info)
+				print(tracking_pattern%j, info)

@@ -1,3 +1,13 @@
+import socks
+s = socks.socksocket()
+socks.set_default_proxy(socks.PROXY_TYPE_SOCKS4, "127.0.0.1", 9150, True)
+import socket
+socket.socket = socks.socksocket
+# import urllib.request
+# print(urllib.request.urlopen("http://www.sourceforge.net/"))
+# print(urllib.request.urlopen("https://www.sourceforge.net/"))
+# quit()
+
 import requests
 import lxml.html
 from lxml import etree
@@ -14,8 +24,6 @@ def track(numbers):
 	params = dict(chain( _params.items(), {"tLabels" : ','.join(numbers)}.items() ))
 	r = requests.get(url, params=params, headers=_headers)
 	html_text = removeNonAscii(r.text)
-	for req in r.history:
-		print(req.url)
 	tree = lxml.html.fromstring(html_text)
 	#print(tree)
 	status_list = []
