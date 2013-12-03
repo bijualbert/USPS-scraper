@@ -3,6 +3,7 @@ s = socks.socksocket()
 socks.set_default_proxy(socks.PROXY_TYPE_SOCKS4, "127.0.0.1", 9150, True)
 import socket
 socket.socket = socks.socksocket
+
 # import urllib.request
 # print(urllib.request.urlopen("http://www.sourceforge.net/"))
 # print(urllib.request.urlopen("https://www.sourceforge.net/"))
