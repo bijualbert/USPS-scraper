@@ -23,7 +23,7 @@ _headers = {'User-Agent' : r"""Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/5
 
 def track(numbers):
 	params = dict(chain( _params.items(), {"tLabels" : ','.join(numbers)}.items() ))
-	r = requests.get(url, params=params, headers=_headers)
+	r = requests.get(url, params=params, headers=_headers, timeout=10)
 	html_text = removeNonAscii(r.text)
 	tree = lxml.html.fromstring(html_text)
 	#print(tree)
