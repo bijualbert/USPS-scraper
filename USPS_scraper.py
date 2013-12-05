@@ -13,6 +13,7 @@ import requests
 import lxml.html
 from lxml import etree
 from itertools import chain
+from collections import OrderedDict
 
 removeNonAscii = lambda s: "".join(i for i in s if ord(i)<128)
 
@@ -29,7 +30,7 @@ def track(numbers, stride):
 	#print(tree)
 	status_list = []
 	for i in range(1,stride+1):
-		status={}
+		status=OrderedDict()
 		try:
 			#t=tree.xpath(r"""//*[@id="results-multi"]/div[%d]/div/div[3]/div[1]/div[4]//*[@id="tc-hits"]/tbody/tr[1]/td[1]/p/text()"""%i)[0]
 			#print(''.join(t.split()))
