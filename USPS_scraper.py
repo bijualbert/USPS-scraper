@@ -21,20 +21,22 @@ url = "https://tools.usps.com/go/TrackConfirmAction.action"
 _params = dict(tRef="fullpage", tLc="2")
 _headers = {'User-Agent' : r"""Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.57 Safari/537.36"""}
 
-def track(numbers):
+def track(numbers, stride):
 	params = dict(chain( _params.items(), {"tLabels" : ','.join(numbers)}.items() ))
 	r = requests.get(url, params=params, headers=_headers, timeout=10)
 	html_text = removeNonAscii(r.text)
 	tree = lxml.html.fromstring(html_text)
 	#print(tree)
 	status_list = []
-	i=1
-	while True:
+	for i in range(1,stride+1):
+		status={}
 		try:
-			status_list.append(tree.xpath(r"""//*[@id="results-multi"]/div[%d]/div/div[1]/div[2]/div[1]/h2/text()"""%i)[0])
+			#t=tree.xpath(r"""//*[@id="results-multi"]/div[%d]/div/div[3]/div[1]/div[4]//*[@id="tc-hits"]/tbody/tr[1]/td[1]/p/text()"""%i)[0]
+			#print(''.join(t.split()))
+			status["current_status"] = tree.xpath(r"""//*[@id="results-multi"]/div[%d]/div/div[1]/div[2]/div[1]/h2/text()"""%i)[0]
 		except IndexError:
-			break
-		i+=1
+			continue
+		status_list.append(status)
 	#print(etree)
 	#print(etree.tostring(tree, pretty_print=True).strip())
 	return status_list

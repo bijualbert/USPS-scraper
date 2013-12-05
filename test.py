@@ -1,26 +1,32 @@
 from USPS_scraper import track
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import sys
+import traceback
 
 import sqlite3
 db = sqlite3.connect('db', isolation_level=None)
+db.execute("DROP TABLE IF EXISTS tracking_infos")
+db.execute("CREATE TABLE IF NOT EXISTS tracking_infos(number text, status text)")
+
+
 tracking_pattern = "LN1478%05dCN"
 #real tracking number: LN147802515CN
 stride=10
 
 def record_info(numbers, i):
 	try:
-		tracking_infos = track(numbers)
+		tracking_infos = track(numbers, stride)
 		if len(tracking_infos)!=stride:
 			print("got %d tracking infos, expected %d"%(len(tracking_infos), stride))
 		else:
 			for j in range(i,i+stride):
 				info = tracking_infos[j%stride]
-				tracking_info = (tracking_pattern%j, info)
-				print(tracking_info)
-				db.execute("insert into tracking_infos values (?, ?)", tracking_info)
+				info["number"] = tracking_pattern%j
+				print(info)
+				db.execute("insert into tracking_infos values (?, ?)", (info["number"], info["current_status"]))
 	except Exception as e:
 		print(e)
+		#traceback.print_exc()
 	sys.stdout.flush()
 if __name__ == '__main__':
 	executor = ProcessPoolExecutor(max_workers=20)
